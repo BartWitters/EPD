@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="EPD/EPD.csproj" />
+  <Project Path="EPD.Application/EPD.Application.csproj" />
+  <Project Path="EPD.Domain/EPD.Domain.csproj" />
+  <Project Path="EPD.Infrastructure/EPD.Infrastructure.csproj" />
+  <Project Path="EPD/EPD.Presentation.csproj" />
 </Solution>

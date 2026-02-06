@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="logo.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="logo.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EPD.Application\EPD.Application.csproj" />
+    <ProjectReference Include="..\EPD.Domain\EPD.Domain.csproj" />
+    <ProjectReference Include="..\EPD.Infrastructure\EPD.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
