@@ -14,31 +14,20 @@ public class PatientService
 
     public async Task AddPatientAsync(string firstName, string lastName, DateOnly dateOfBirth, string nationalRegisterNumber, string street, int streetNumber, int aptNumber, string city, string emailAddress)
     {
-        var Patient = new Patient
-        {
-            LastName = lastName,
-            FirstName = firstName,
-            DateOfBirth = dateOfBirth,
-            NationalRegisterNumber = nationalRegisterNumber,
-            Street = street,
-            StreetNumber = streetNumber,
-            AptNumber = aptNumber,
-            City = city,
-            EmailAddress = emailAddress
-        };
+        
+        var patient = Patient.Create(firstName, lastName, dateOfBirth, nationalRegisterNumber, street, streetNumber, aptNumber, city, emailAddress);
 
-        await _PatientRepository.AddPatientAsync(Patient);
+        await _PatientRepository.AddPatientAsync(patient);
     }
 
-    public IEnumerable<Patient> GetAllPatients()
+    public async Task<IEnumerable<Patient>> GetAllPatientsAsync()
     {
-        return _PatientRepository.GetAllPatients();
+        return await _PatientRepository.GetAllPatientsAsync();
     }
 
-    public async Task DeletePatientAsync(int PatientId)
+    public async Task DeletePatientAsync(int patientId)
     {
-        var allPatients = _PatientRepository.GetAllPatients();
-        var patientToDelete = allPatients.FirstOrDefault(p => p.Id == PatientId);
+        var patientToDelete = await _PatientRepository.GetPatientByIdAsync(patientId);
         if (patientToDelete != null)
         {
             await _PatientRepository.DeletePatientAsync(patientToDelete);

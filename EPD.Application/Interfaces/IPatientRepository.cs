@@ -1,9 +1,12 @@
-﻿namespace EPD.Application.Interfaces;
+﻿using EPD.Domain.Entities;
+
+namespace EPD.Application.Interfaces;
 
 public interface IPatientRepository
 {
-    Task AddPatientAsync(Domain.Entities.Patient patient);
-
-    IEnumerable<Domain.Entities.Patient> GetAllPatients();
-    Task DeletePatientAsync(Domain.Entities.Patient patient);
+    Task AddPatientAsync(Patient patient);
+    Task<IEnumerable<Patient>> GetAllPatientsAsync();
+    Task<Patient?> GetPatientByIdAsync(int id);
+    Task DeletePatientAsync(Patient patient);
+    Task SaveAsync(Patient patient);
 }

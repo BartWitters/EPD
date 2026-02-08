@@ -1,5 +1,6 @@
 ﻿using EPD.Application.Interfaces;
 using EPD.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace EPD.Infrastructure.Repositories;
 
@@ -12,20 +13,30 @@ public class PatientRepository : IPatientRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddPatientAsync(Patient Patient)
+    public async Task AddPatientAsync(Patient patient)
     {
-        _dbContext.Patients.Add(Patient);
+        _dbContext.Patients.Add(patient);
         await _dbContext.SaveChangesAsync();
     }
 
-    public IEnumerable<Patient> GetAllPatients()
+    public async Task<IEnumerable<Patient>> GetAllPatientsAsync()
     {
-        return [.. _dbContext.Patients];
+        return await _dbContext.Patients.ToListAsync();
     }
 
-    public async Task DeletePatientAsync(Patient Patient)
+    public async Task<Patient?> GetPatientByIdAsync(int id)
     {
-        _dbContext.Patients.Remove(Patient);
+        return await _dbContext.Patients.FirstOrDefaultAsync(patient => patient.Id == id);
+    }
+
+    public async Task DeletePatientAsync(Patient patient)
+    {
+        _dbContext.Patients.Remove(patient);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task SaveAsync(Patient patient)
+    {
         await _dbContext.SaveChangesAsync();
     }
 }

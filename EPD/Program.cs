@@ -1,4 +1,10 @@
-﻿using EPD.Infrastructure;
+﻿using EPD.Application.Interfaces;
+using EPD.Application.Services;
+using EPD.Domain.Entities;
+using EPD.Infrastructure;
+using EPD.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EPD.Presentation;
 
@@ -7,19 +13,32 @@ public class Program
     #region FreeCodeForAssignment
     static async Task Main(string[] args)
     {
-        EPDDbContext dbContext = new();
+        var services = new ServiceCollection();
+
+        services.AddDbContext<EPDDbContext>(options => options.UseSqlite("Data Source=epd.db"));
+
+        services.AddScoped<IPatientRepository, PatientRepository>();
+        services.AddScoped<IPhysicianRepository, PhysicianRepository>();
+        services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        services.AddScoped<PatientService>();
+        services.AddScoped<PhysicianService>();
+        services.AddScoped<AppointmentService>();
+        services.AddTransient<Menu>();
+
+        using var serviceProvider = services.BuildServiceProvider();
+        var dbContext = serviceProvider.GetRequiredService<EPDDbContext>();
         dbContext.Database.EnsureCreated();
 
-        var menu = new Menu(dbContext);
+        var menu = serviceProvider.GetRequiredService<Menu>();
 
-        while (await ShowMenu(menu))
+        while (await ShowMenu(menu, serviceProvider))
         {
             Console.WriteLine("Om terug naar het menu te gaan, druk op een knop naar keuze.");
             Console.ReadKey();
         }
     }
 
-    public static async Task<bool> ShowMenu(Menu menu)
+    public static async Task<bool> ShowMenu(Menu menu, IServiceProvider serviceProvider)
     {
         Console.Clear();
         foreach (var line in File.ReadAllLines("logo.txt"))
@@ -32,9 +51,10 @@ public class Program
         Console.WriteLine("3 - Arts toevoegen");
         Console.WriteLine("4 - Arts verwijderen");
         Console.WriteLine("5 - Afspraak toevoegen");
-        Console.WriteLine("6 - Afspraken inzien");
-        Console.WriteLine("7 - Sluiten");
-        Console.WriteLine("8 - Reset db");
+        Console.WriteLine("6 - Afspraken inzien voor patiënt");
+        Console.WriteLine("7 - Afspraken inzien voor dokter");
+        Console.WriteLine("8 - Sluiten");
+        Console.WriteLine("9 - Reset db");
 
         if (int.TryParse(Console.ReadLine(), out int option))
         {
@@ -53,15 +73,18 @@ public class Program
                     await menu.DeletePhysicianAsync();
                     return true;
                 case 5:
-                    menu.AddAppointment();
+                    await menu.AddAppointmentAsync();
                     return true;
                 case 6:
-                    menu.ShowAppointment();
+                    await menu.ShowAppointmentsForPersonAsync<Patient>();
                     return true;
                 case 7:
-                    return false;
+                    await menu.ShowAppointmentsForPersonAsync<Physician>();
+                    return true;
                 case 8:
-                    EPDDbContext dbContext = new EPDDbContext();
+                    return false;
+                case 9:
+                    var dbContext = serviceProvider.GetRequiredService<EPDDbContext>();
                     dbContext.Database.EnsureDeleted();
                     dbContext.Database.EnsureCreated();
                     return true;

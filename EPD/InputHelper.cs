@@ -7,7 +7,7 @@ public class InputHelper
 {
     public static string GetNonEmptyStringInput(string prompt)
     {
-        Console.WriteLine($"Geef {prompt} patiënt in: ");
+        Console.WriteLine($"Geef {prompt} in: ");
         string? input = Console.ReadLine();
 
         while (string.IsNullOrWhiteSpace(input))
@@ -102,7 +102,7 @@ public class InputHelper
 
         int integerValue;
 
-        while (!Validators.InputIsIntegerAndGreaterThanZero(input, out integerValue) || !collection.Any(x => x.Id == integerValue))
+        while (!Validators.InputIsIntegerAndGreaterThanZero(input, out integerValue) || !collection.Any(value => value.Id == integerValue))
         {
             Console.WriteLine("Input is niet geldig, probeer opnieuw (nummer moet uit de lijst komen):");
             input = Console.ReadLine();

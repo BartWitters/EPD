@@ -1,5 +1,6 @@
 ﻿using EPD.Application.Interfaces;
 using EPD.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace EPD.Infrastructure.Repositories;
 
@@ -18,9 +19,14 @@ public class PhysicianRepository : IPhysicianRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public IEnumerable<Physician> GetAllPhysicians()
+    public async Task<IEnumerable<Physician>> GetAllPhysiciansAsync()
     {
-        return [.. _dbContext.Physicians];
+        return await _dbContext.Physicians.ToListAsync();
+    }
+
+    public async Task<Physician?> GetPhysicianByIdAsync(int id)
+    {
+        return await _dbContext.Physicians.FirstOrDefaultAsync(physician => physician.Id == id);
     }
 
     public async Task DeletePhysicianAsync(Physician Physician)
