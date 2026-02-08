@@ -1,6 +1,10 @@
 <Solution>
+  <Folder Name="/docs/">
+    <File Path="README.md" />
+  </Folder>
   <Project Path="EPD.Application/EPD.Application.csproj" />
   <Project Path="EPD.Domain/EPD.Domain.csproj" />
   <Project Path="EPD.Infrastructure/EPD.Infrastructure.csproj" />
+  <Project Path="EPD.Tests/EPD.Tests.csproj" Id="5da5ae3b-854f-450c-8178-cbcc8c01aee7" />
   <Project Path="EPD/EPD.Presentation.csproj" />
 </Solution>
